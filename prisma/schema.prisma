@@ -79,6 +79,15 @@ model BugReport {
   id String @id @default(cuid())
   issue String  @default("BugReport")
   createAt  DateTime @default(now())
-  media   String[]
+  media   Json[]
   Description String? 
+}
+model Media {
+  id String @id @default(cuid())
+  name String
+  data  Bytes
+  createdAt DateTime @default(now())
+  size  Int
+  type String
+  baseUri  String
 }
