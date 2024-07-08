@@ -47,7 +47,7 @@ const [Iseditng, setIsEditng]= useState(false)
     formData = Object.fromEntries(formData) as {id:string, msg: string}
     //@ts-ignore
     await UpateMessage(formData?.id, formData?.msg, i).then((res)=>{
-      if(!res?.success)   toast("error editing message try again",{position: "top"});
+      if(!res?.success)   toast("error editing message try again",{position: "top-left"});
     })
     //@ts-ignore
     setIsEditng(false)
@@ -97,7 +97,7 @@ const [Iseditng, setIsEditng]= useState(false)
              }
              else{
                        //@ts-ignore
-         toast("error deleting message try again",{position: "top"});
+         toast("error deleting message try again",{position: "top-left"});
              }
            })
           }}>Delete</DropdownMenuItem>

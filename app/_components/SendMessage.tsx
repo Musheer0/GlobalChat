@@ -90,7 +90,7 @@ useEffect(()=>{
           await sendMessage(user?.user?.id, formdata?.msg).then((res)=>{
             //@ts-ignore
             if(res?.error){
-              toast("error sending message try again",{position:'top-left'});
+              toast("error sending message try again",{position: "top-left"});
               setLoading(false);
 
             }
