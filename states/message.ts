@@ -7,6 +7,8 @@ interface MsgState {
   removeMessage : (id:string) => void;
   deletedmsg: String[],
   addDeletedMsg: (id:string)=> void;
+  isLoading : boolean,
+  updateMessages: (messages: Message[]) => void;
 }
 
 export const useChatStore = create<MsgState>()((set) => ({
@@ -14,5 +16,7 @@ export const useChatStore = create<MsgState>()((set) => ({
   addMessage: (message:Message) => set((state) => ({ messages: [...state.messages, message] })),
   removeMessage: (id:string)=>set((state)=>({messages:state.messages.filter((e)=> e.id !==id)})),
   deletedmsg: [],
-addDeletedMsg: (id:string)=>set((state)=>({deletedmsg: [...state.deletedmsg, id]}))
+addDeletedMsg: (id:string)=>set((state)=>({deletedmsg: [...state.deletedmsg, id]})),
+updateMessages:( newmessages: Message[]) => set((state)=> ({messages:[...newmessages] })),
+isLoading: true,
 }))

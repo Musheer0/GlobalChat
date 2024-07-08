@@ -9,7 +9,7 @@ const InitChat = () => {
     useEffect(()=>{
        const unsub = async()=>{
         const chats = await getChats()
-            useChatStore.setState({messages: chats})
+            useChatStore.setState({messages: chats, isLoading:false})
        }
        unsub()
     },[])

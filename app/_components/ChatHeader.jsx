@@ -7,6 +7,7 @@ const ChatHeader = () => {
 <>
 <Istyping/>
 <div className='flex  items-center  justify-between border-b-[1px] border-gray-700 pb-2 w-full'>
+       
        <div className="left flex-1 flex flex-col ">
        <h1 className=' '>
        DailyNotChat

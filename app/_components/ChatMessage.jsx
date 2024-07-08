@@ -1,22 +1,41 @@
 "use client"
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useUserStore } from '../../states/user';
 import { useChatStore } from '@/states/message';
 import InitChat from '@/states/InitChat';
 import LoaderChat from './LoaderChat';
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import Chat from './Chat';
+import Pusher from 'pusher-js';
 
 const ChatMessage = () => {
   const { user } = useUserStore();
-  const { messages } = useChatStore();
+  const { messages, isLoading, updateMessages } = useChatStore();
   const msgendref = useRef(null)
+  const [msg, setMsg] = useState(messages)
   const handlescrolltoend = ()=>{
     msgendref.current?.scrollIntoView({behavior: 'smooth'});
   }
   useEffect(()=>{
     handlescrolltoend()
+    
+    const handleEdited = async(data)=>{
+      var updated_messages =[...messages];
+      updated_messages[data?.index] = data?.msg
+    setMsg(updated_messages)
+
+    }
+    var pusher= new  Pusher("3cb568a6f522ded75bb1",{
+      cluster: "mt1"
+    });
+    var editchannel = pusher.subscribe("editmessage");
+    editchannel.bind("edit-msg", handleEdited);
+    return()=>{
+      editchannel.unbind("edit-msg", handleEdited);
+      pusher.unsubscribe("editmessage");
+    }
   },[messages])
+
   return (
     <div className='chatbox w-full flex-1 flex  relative flex-col gap-2 overflow-auto border-none'>
       <InitChat />
@@ -26,13 +45,13 @@ const ChatMessage = () => {
         );
       })} 
 
-      {/* {messages.length===0 && <>
+      {isLoading&& <>
       {[1,2,3,4,5,6,7,8,9,0].map((e)=>{
         return <LoaderChat key={e}/>
       })}
-      </>} */}
+      </>}
       <div className="endline h-10 " ref={msgendref}>
-        {messages.length}
+
       </div>
     </div>
   );

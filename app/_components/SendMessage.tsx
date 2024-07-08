@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { useUserStore } from "@/states/user";
 import React, { useEffect, useRef, useState } from "react";
 import { IoIosSend } from "react-icons/io";
@@ -11,11 +10,12 @@ import { useChatStore } from "@/states/message";
 import { useIstypingStore } from "@/states/Istyping";
 import Pusher from "pusher-js";
 import { useOnlineUserStore } from "@/states/OnlineUsers";
+import { Message } from "@prisma/client";
 const SendMessage = () => {
   const { user } = useUserStore();
   const inputref = useRef(null);
   const [loading, setLoading] = useState(false);
-  const {messages,addMessage,addDeletedMsg} = useChatStore();
+  const {messages,addMessage,addDeletedMsg, updateMessages} = useChatStore();
   const {addUser, removeUser, users} = useIstypingStore()
 const {setOnlineUsers, users:onlineusers} = useOnlineUserStore()
 useEffect(()=>{
@@ -58,6 +58,7 @@ useEffect(()=>{
     channel.bind('send-msg-event', handleNewMessage);
     channel.bind('istyping', handleIstyping);
     editchannel.bind("delete-msg",handledelete);
+
   }
   unsub();
     return ()=>{
@@ -66,9 +67,10 @@ useEffect(()=>{
       channel.unbind("send-msg-event", handleNewMessage);
       channel.unbind("istyping",handleIstyping);
       channel.unbind("isonline", handleIsonline);
+
       editchannel.unbind("delete-msg",handledelete);
       pusher.unsubscribe("message");
-      pusher.unsubscribe("editmessage");
+
     }
 },[user])
   return (

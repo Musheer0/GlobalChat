@@ -58,7 +58,7 @@ export const DeleteMessage = async(Id:string)=>{
  }
 
 }
-export const UpateMessage = async(Id:string, msg:string)=>{
+export const UpateMessage = async(Id:string, msg:string,index:number)=>{
   console.log('start')
   if(Id){
     const time = new Date()
@@ -68,8 +68,11 @@ export const UpateMessage = async(Id:string, msg:string)=>{
       updated: time.toISOString(),
       msg: msg
        
-    }})
-    console.log(message)
+    }, include:{user: true}})
+    pusher.trigger("editmessage", "edit-msg",{
+      msg: message,
+      index: index
+    })
 
       return {success: true, message}
     }
