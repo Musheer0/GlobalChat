@@ -35,10 +35,18 @@ const Chat = ({ e, i }:any) => {
   const {user} = useUserStore()
   const {deletedmsg} = useChatStore()
 const [Iseditng, setIsEditng]= useState(false)
+const {updatedMessages}= useChatStore()
   const handleDialogOpenChange = (open:boolean) => {
     setIsDialogOpen(open);
   };
-
+useEffect(()=>{
+  
+  if(updatedMessages.some((item)=>item.id===msg?.id)){
+    const newMessage = updatedMessages.filter((item)=> item.id===msg?.id);
+    setMsg(newMessage[0])
+    if(isedited)setIsEditng(false)
+  }
+},[updatedMessages])
   const handleSubmit = async(e:React.FormEvent<HTMLFormElement>) => {
     setIsEditng(true)
     e.preventDefault();
@@ -93,7 +101,7 @@ const [Iseditng, setIsEditng]= useState(false)
             setIsEditng(true);
            await DeleteMessage(msg?.id).then((res)=>{
              if(res?.success){
-               setIsEditng(false);
+                setisEdited(true)
              }
              else{
                        //@ts-ignore

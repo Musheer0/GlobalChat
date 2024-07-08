@@ -15,7 +15,7 @@ const SendMessage = () => {
   const { user } = useUserStore();
   const inputref = useRef(null);
   const [loading, setLoading] = useState(false);
-  const {messages,addMessage,addDeletedMsg, updateMessages} = useChatStore();
+  const {messages,addMessage,addDeletedMsg, updateMessage, updatedMessages} = useChatStore();
   const {addUser, removeUser, users} = useIstypingStore()
 const {setOnlineUsers, users:onlineusers} = useOnlineUserStore()
 useEffect(()=>{
@@ -42,11 +42,21 @@ useEffect(()=>{
       addDeletedMsg(data?.id)
   
     }
+    const handleEdited = async(data:any)=>{
+      const doesExist = updatedMessages.findIndex((e)=> e.id===data?.msg?.id);
+      if(doesExist===-1){
+            updateMessage([...updatedMessages, data?.msg])
+      }
+      else{
+        var newMessageArray = updatedMessages;
+        newMessageArray[doesExist] = data?.msg;
+        updateMessage(newMessageArray)
+      }
+  
+    }
     //channels
   const channel = pusher.subscribe('message');
   var editchannel = pusher.subscribe("editmessage");
-
-
   const unsub = async()=>{
    //@ts-ignore
     if(user?.user){
@@ -58,7 +68,7 @@ useEffect(()=>{
     channel.bind('send-msg-event', handleNewMessage);
     channel.bind('istyping', handleIstyping);
     editchannel.bind("delete-msg",handledelete);
-
+    editchannel.bind("edit-msg", handleEdited);
   }
   unsub();
     return ()=>{
@@ -67,9 +77,10 @@ useEffect(()=>{
       channel.unbind("send-msg-event", handleNewMessage);
       channel.unbind("istyping",handleIstyping);
       channel.unbind("isonline", handleIsonline);
-
       editchannel.unbind("delete-msg",handledelete);
+      editchannel.unbind("edit-msg",handledelete);
       pusher.unsubscribe("message");
+      pusher.unsubscribe("editmessage");
 
     }
 },[user])

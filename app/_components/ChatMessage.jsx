@@ -18,22 +18,6 @@ const ChatMessage = () => {
   }
   useEffect(()=>{
     handlescrolltoend()
-    
-    const handleEdited = async(data)=>{
-      var updated_messages =[...messages];
-      updated_messages[data?.index] = data?.msg
-    setMsg(updated_messages)
-
-    }
-    var pusher= new  Pusher("3cb568a6f522ded75bb1",{
-      cluster: "mt1"
-    });
-    var editchannel = pusher.subscribe("editmessage");
-    editchannel.bind("edit-msg", handleEdited);
-    return()=>{
-      editchannel.unbind("edit-msg", handleEdited);
-      pusher.unsubscribe("editmessage");
-    }
   },[messages])
 
   return (

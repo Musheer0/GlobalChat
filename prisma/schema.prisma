@@ -65,11 +65,20 @@ model User {
 }
 model Message {
   id      String    @id @default(cuid())
-  msg     String
+  msg     String?
   created DateTime  @default(now())
   updated DateTime  @default(now())
-  user    User      @relation(fields: [userId], references: [id])
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
-
+ type       String     @default("txt") //text messages : text, media : med, audio: aud, mixed messages : mix
+ media  String[]
+// todo add  audio 
   @@map("messages")
+}
+model BugReport {
+  id String @id @default(cuid())
+  issue String  @default("BugReport")
+  createAt  DateTime @default(now())
+  media   String[]
+  Description String? 
 }
