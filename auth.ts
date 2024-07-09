@@ -15,5 +15,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       session.user.id = token.sub;
       return session
     }
+  },
+  pages:{
+    error: '/',
+    signIn: '/sign-in'
   }
 })
