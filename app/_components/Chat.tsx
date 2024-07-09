@@ -80,7 +80,7 @@ useEffect(()=>{
        />
        <div className="text flex flex-col gap-1">
          <p className='username text-xs text-zinc-200 flex flex-wrap items-center gap-1'>{msg?.user?.name}
-             //@ts-ignore
+              {/*@ts-ignore*/}
          <p>{(msg?.user?.id===user?.user?.id)? <span  className='text-green-500 bg-green-950 w-fit px-2 rounded-md'>you</span>: ''}</p>
          </p>
  
