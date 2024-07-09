@@ -6,7 +6,7 @@ import { Toaster } from "sonner";
 const inter = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Global Chal",
+  title: "Global Chat",
   description: "Talk with Global Users",
 };
 

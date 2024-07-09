@@ -103,7 +103,8 @@ useEffect(()=>{
     }
 },[user])
   return (
-    <form
+<div className="w-full flex items-end gap-1">
+<form
       onSubmit={async (e) => {
         setLoading(true);
         e.preventDefault();
@@ -130,7 +131,7 @@ useEffect(()=>{
         //@ts-ignore
         inputref.current.value = "";
       }}
-      className="flex flex-col w-full"
+      className="flex flex-col w-full relative h-full"
     >
      <div className="top-overlays flex items-end gap-1 justify-start">
      <Istyping/>
@@ -166,14 +167,16 @@ useEffect(()=>{
       >
        {loading ?<span className="animate-spin"> <AiOutlineLoading3Quarters/></span> :  <IoIosSend />}
       </Button>
-      <GifFinder setGif={setGif}>
+     
+
+        </div>
+    </form>
+    <GifFinder setGif={setGif}>
       <Button type="button" suppressHydrationWarning className='h-[53px] w-[60px] text-xl'>
          <MdGif />
          </Button>
       </GifFinder>
-
-        </div>
-    </form>
+</div>
   );
 };
 
