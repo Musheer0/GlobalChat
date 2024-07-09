@@ -11,13 +11,10 @@ export const getGif = async (query: string) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-
         const data = await response.json();
-        console.log(data); // Log the parsed JSON data
-
         return data; // Return the parsed JSON data
     } catch (error) {
-        console.error('Fetch error:', error);
-        throw error; // Rethrow the error to be handled wherever this function is called
+        console.log('Fetch error:', error);
+        return []
     }
 };
