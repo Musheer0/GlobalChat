@@ -1,11 +1,10 @@
 import Link from 'next/link';
-import React from 'react';
-
+import React, { useState } from 'react';
 const Page = () => {
   return (
     <div className='p-5'>
       <Link href="/sign-in">
-        <a className='text-sm my-2 underline'>Go Back</a>
+        <p className='text-sm my-2 underline'>Go Back</p>
       </Link>
       <h1 className='text-2xl font-bold bg-green-600 rounded-md px-2 py-1 w-fit'>Privacy Policy</h1>
       <p className='text-xs text-zinc-400'>Effective Date: 09-07-24</p>
@@ -68,7 +67,7 @@ const Page = () => {
       
       <h2 className='policy-h2 font-bold text-lg underline'>9. Contact Us</h2>
       <p>
-        If you have any questions about this Privacy Policy, please contact us at <a href='mailto:musheeran165@gmail.com' className=' bg-red-500 px-1'>developer email</a>.
+        If you have any questions about this Privacy Policy, please contact us at <Link href='mailto:musheeran165@gmail.com' className=' bg-red-500 px-1'>developer email</Link>.
       </p>
       
       <h2 className='policy-h2 font-bold text-lg px-1 bg-yellow-500 w-fit'>10. Disclaimer</h2>

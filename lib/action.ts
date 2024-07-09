@@ -3,6 +3,7 @@ import { signIn } from "@/auth"
 import { db } from "@/db"
 import { User } from "@prisma/client"
 import { uploadfile } from "./media"
+import { use } from "react"
 const Pusher = require("pusher")
 const pusher = new Pusher({
   appId : process.env.PUSHER_APP_ID,
@@ -17,49 +18,29 @@ export const loginwithgithub = async()=>{
 export const loginwithgoogle= async()=>{
     await signIn("google")
 }
-export const sendMessage = async(userId:string, msg:string, media:any[])=>{
- if(userId && msg){
-   try{
-  let mediaarray;
-  console.log(media)
-  if(media?.length>0){
-    mediaarray =await Promise.all(
-      media.map(async(e,i)=>{
+export const sendMessage = async(userId:string, msg:string, gif:string)=>{
+ if(userId && (msg || gif)){
+    try{
+      const newmessage =await  db.message.create({data:{
+        msg: msg || '',
+        userId :userId,
+        gif: gif|| ''
+     }, include:{user: true},})
+    
+    pusher.trigger('message', 'send-msg-event',{
+      message: `${ JSON.stringify(newmessage)}\n\n`
+    })
+     return newmessage;
+       }
+       catch(e){
+        console.log(e)
         //@ts-ignore
-        const filebuffer =  await uploadfile(e?.name, e?.size, e?.file,e?.type)
-        return filebuffer
-      })
-    )
-  }
-   const newmessage =await  db.message.create({data:{
-    msg: msg,
-    userId :userId,
-    media: mediaarray
- }, include:{user: true},})
- const filteredmessage = {
-  msg: newmessage?.msg,
-  id: newmessage.id,
-  created:newmessage.created,
-  updated:newmessage.updated,
-  user:newmessage.user,
-  userId:newmessage.userId,
-  media :newmessage.media.length
+        return {error: true, cause:e.message}
+       }
+    }
+   
  }
-pusher.trigger('message', 'send-msg-event',{
-  message: `${ JSON.stringify(filteredmessage)}\n\n`
-})
- return newmessage;
-   }
-   catch(e){
-    console.log(e)
-    //@ts-ignore
-    return {error: true, cause:e.message}
-   }
- }
- else{
-    return;
- }
-}
+
 export const DeleteMessage = async(Id:string)=>{
  if(Id){
   console.log(Id)
@@ -125,4 +106,19 @@ export const isonline = async(userId:string)=>{
 pusher.trigger("message", "isonline",{
   user : userId,
 })
+}
+export const getUser = async(id:string)=>{
+  try{
+    if(id){
+      const user = await db.user.findFirst({where:{id:id}});
+      if(user){
+       return user;
+      }
+      else return
+     }
+     else return
+  }
+  catch{
+    return;
+  }
 }

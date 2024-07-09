@@ -61,6 +61,7 @@ model User {
   sessions      Session[]   // Assuming Session is another model
   msgs          Message[]   // Assuming Message is another model
   policy       Boolean  @default(true)
+  role            String @default("User")
   @@map("users")
 }
 model Message {
@@ -70,7 +71,7 @@ model Message {
   updated DateTime  @default(now())
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
- media Json[]  
+gif            String
 // todo add  audio 
   @@map("messages")
 }

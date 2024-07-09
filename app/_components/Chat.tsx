@@ -35,8 +35,8 @@ const Chat = ({ e, i }:any) => {
   const [msg, setMsg] = useState(e)
   const {user} = useUserStore()
   const {deletedmsg} = useChatStore()
-const [Iseditng, setIsEditng]= useState(false)
-const {updatedMessages}= useChatStore()
+  const [Iseditng, setIsEditng]= useState(false)
+  const {updatedMessages}= useChatStore()
   const handleDialogOpenChange = (open:boolean) => {
     setIsDialogOpen(open);
   };
@@ -82,6 +82,8 @@ useEffect(()=>{
          <p className='username text-xs text-zinc-200 flex flex-wrap items-center gap-1'>{msg?.user?.name}
               {/*@ts-ignore*/}
          <p>{(msg?.user?.id===user?.user?.id)? <span  className='text-green-500 bg-green-950 w-fit px-2 rounded-md'>you</span>: ''}</p>
+                 {/*@ts-ignore*/}
+         <p>{(msg?.user?.role==='ADMIN')? <span  className='text-red-500 bg-red-950 w-fit px-2 rounded-md'>Admin</span>: ''}</p>
          </p>
  
          <p className='time'>
@@ -89,8 +91,9 @@ useEffect(()=>{
           ? new Date(msg.created).toDateString() : `(edited) ${new Date(msg.updated).toDateString()}`}
           </p>
          <p className='msg whitespace-pre-wrap'>{msg?.msg}</p>
-
-          {msg?.media>0 &&   <p className='text-sky-500 bg-sky-950 px-3 py-4 rounded-lg flex items-center gap-1'><span className='text-2xl'><CiFileOn /></span> {msg?.media} attachments</p>}
+          {msg?.gif!=="" && <>
+          <img src={msg?.gif} alt='gif message' className='max-h-[400px] object-contain'></img>
+          </>}
        </div>
     </div>
     {/*@ts-ignore*/}

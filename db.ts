@@ -1,2 +1,2 @@
 import { PrismaClient } from "@prisma/client";
-export const db = new PrismaClient({log: ['query', 'error', 'info', 'warn']})
+export const db = new PrismaClient()

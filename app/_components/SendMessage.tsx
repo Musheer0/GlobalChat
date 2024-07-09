@@ -12,9 +12,10 @@ import Pusher from "pusher-js";
 import { useOnlineUserStore } from "@/states/OnlineUsers";
 import { Message } from "@prisma/client";
 import Istyping from "./Istyping";
-import { MdPermMedia } from "react-icons/md";
+import { MdGif, MdPermMedia } from "react-icons/md";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { ReadFileAsBytes } from "@/lib/clientfunctions";
+import GifFinder from "@/components/GifFinder";
  
 const closebtn= ({fun}:any)=>{
   return (
@@ -26,8 +27,7 @@ const SendMessage = () => {
   const { user } = useUserStore();
   const inputref = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [files, setFIles] = useState([])
-  const [fileBlob, setFileBlob] = useState([])
+  const [gif, setGif] = useState("")
   const {messages,addMessage,addDeletedMsg, updateMessage, updatedMessages} = useChatStore();
   const {addUser, removeUser, users} = useIstypingStore()
 const {setOnlineUsers, users:onlineusers} = useOnlineUserStore()
@@ -116,7 +116,7 @@ useEffect(()=>{
         //@ts-ignore
         if(user?.user?.id){
                   //@ts-ignore
-          await sendMessage(user?.user?.id, formdata?.msg, files).then((res)=>{
+          await sendMessage(user?.user?.id, formdata?.msg, gif).then((res)=>{
             //@ts-ignore
             if(res?.error){
               toast("error sending message try again",{position: "top-left"});
@@ -124,7 +124,7 @@ useEffect(()=>{
 
             }
             setLoading(false);
-            setFIles([])
+           setGif("")
           })
         }
         //@ts-ignore
@@ -132,35 +132,16 @@ useEffect(()=>{
       }}
       className="flex flex-col w-full"
     >
-      <Istyping/>
-        <div className="inputs relative flex items-start h-full w-full  gap-2 ">
-     {files.length>0 && 
-          <div className="file absolute -top-[85px] left-0 w-full h-20 bg-gray-900 rounded-lg flex items-center overflow-auto gap-1 p-[5px]">
-          {files.map((e, i)=>{
-           return   <div key={i} className="img-preview h-full w-[80px] overflow-hidden flex-shrink-0 rounded-md relative">
-                      <div className="close z-10 bg-zinc-950/70 cursor-pointer p-1 absolute  top-1 right-1 rounded-md" onClick={()=>{
-                        removefile(i)
-                      }}><IoCloseCircleOutline /></div>
-                      {/*//@ts-ignore */}
-                      {e?.type?.startsWith("image") && 
-                      <>
-                      {/*//@ts-ignore */}
-                      <img  className="w-full h-full object-cover" src={e?.blob} alt={e?.name} />
-                      </>
-                      }
-                      {/*//@ts-ignore */}
-                      {e?.type==='video/mp4' && 
-                      <>
-                      <div className="overlay absolute top-0 left-0 bg-zinc-950/70 text-xs w-fit">video</div>
-                      {/*//@ts-ignore */}
-                      <video className="w-full h-full object-cover"  src={e?.blob} alt={e?.name} />
-                      </>
-                      }
-           </div>
-          })}
-
-          </div>
+     <div className="top-overlays flex items-end gap-1 justify-start">
+     <Istyping/>
+     <div className="gifs">
+     {gif!==""&& 
+      <img className=" w-1/2 bg-red-500 rounded-md object-cover my-1" src={gif} alt="gif preview" />
      }
+     </div>
+     </div>
+        <div className="inputs relative flex items-start h-full w-full  gap-2 ">
+
         <input
         disabled={loading}
         ref={inputref}
@@ -177,6 +158,7 @@ useEffect(()=>{
 
         }}
       ></input>
+          
       <Button
         disabled={loading}
         className="h-full w-[60px] text-xl"
@@ -184,35 +166,12 @@ useEffect(()=>{
       >
        {loading ?<span className="animate-spin"> <AiOutlineLoading3Quarters/></span> :  <IoIosSend />}
       </Button>
- <label htmlFor="file-upload"  className="h-full w-[60px] bg-gray-900 flex items-center justify-center rounded-lg text-xl cursor-pointer">
- <MdPermMedia />
- <input onChange={async(e)=>{
-  //@ts-ignore
-  var files = Array.from(e.target.files);
+      <GifFinder setGif={setGif}>
+      <Button type="button" suppressHydrationWarning className='h-[53px] w-[60px] text-xl'>
+         <MdGif />
+         </Button>
+      </GifFinder>
 
-  if(files.length>=3){
-   files =  files.slice(0, 3)
-    alert('maximum 3 files allowed')
-  }
-//files in unit8array to send to server side
-     //@ts-ignore
-     files = await Promise.all(
-      files.map(async(e,i)=>{
-        if(e?.size/1000000<10){
-          const unit8arrayfile = await ReadFileAsBytes(e);
-          return {type : e.type, name: e.name, size: e.size,file:unit8arrayfile,index: i,blob: URL.createObjectURL(e)}
-        }
-          
-        else{
-          alert("file size should be less than 10mb");
-          return;
-        }
-      })
-     )
-      //@ts-ignore
-    setFIles(files.filter((e)=> e!==undefined))
- }} type="file" multiple hidden id="file-upload" name="media"  accept="image/*,video/*"/>
- </label>
         </div>
     </form>
   );

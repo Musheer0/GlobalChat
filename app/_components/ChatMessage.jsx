@@ -23,7 +23,9 @@ const ChatMessage = () => {
   return (
     <div className='chatbox w-full flex-1 flex  relative flex-col gap-2 overflow-auto border-none'>
       <InitChat />
- 
+      <div className="endline h-20 " >
+
+</div>
        {messages.map((e, i) => {
         return (  <Chat e={e} key={i} i={i}/>
         );
@@ -37,6 +39,7 @@ const ChatMessage = () => {
       <div className="endline h-10 " ref={msgendref}>
 
       </div>
+
     </div>
   );
 };
