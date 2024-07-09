@@ -14,6 +14,7 @@ import { Message } from "@prisma/client";
 import Istyping from "./Istyping";
 import { MdPermMedia } from "react-icons/md";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { ReadFileAsBytes } from "@/lib/clientfunctions";
  
 const closebtn= ({fun}:any)=>{
   return (
@@ -26,6 +27,7 @@ const SendMessage = () => {
   const inputref = useRef(null);
   const [loading, setLoading] = useState(false);
   const [files, setFIles] = useState([])
+  const [fileBlob, setFileBlob] = useState([])
   const {messages,addMessage,addDeletedMsg, updateMessage, updatedMessages} = useChatStore();
   const {addUser, removeUser, users} = useIstypingStore()
 const {setOnlineUsers, users:onlineusers} = useOnlineUserStore()
@@ -114,7 +116,7 @@ useEffect(()=>{
         //@ts-ignore
         if(user?.user?.id){
                   //@ts-ignore
-          await sendMessage(user?.user?.id, formdata?.msg).then((res)=>{
+          await sendMessage(user?.user?.id, formdata?.msg, files).then((res)=>{
             //@ts-ignore
             if(res?.error){
               toast("error sending message try again",{position: "top-left"});
@@ -122,6 +124,7 @@ useEffect(()=>{
 
             }
             setLoading(false);
+            setFIles([])
           })
         }
         //@ts-ignore
@@ -142,7 +145,7 @@ useEffect(()=>{
                       {e?.type?.startsWith("image") && 
                       <>
                       {/*//@ts-ignore */}
-                      <img className="w-full h-full object-cover" src={e?.blob} alt={e?.name} />
+                      <img  className="w-full h-full object-cover" src={e?.blob} alt={e?.name} />
                       </>
                       }
                       {/*//@ts-ignore */}
@@ -183,24 +186,29 @@ useEffect(()=>{
       </Button>
  <label htmlFor="file-upload"  className="h-full w-[60px] bg-gray-900 flex items-center justify-center rounded-lg text-xl cursor-pointer">
  <MdPermMedia />
- <input onChange={(e)=>{
+ <input onChange={async(e)=>{
   //@ts-ignore
   var files = Array.from(e.target.files);
 
-  if(files.length>=10){
-   files =  files.slice(0, 10)
-    alert('maximum 10 files allowed')
+  if(files.length>=3){
+   files =  files.slice(0, 3)
+    alert('maximum 3 files allowed')
   }
+//files in unit8array to send to server side
      //@ts-ignore
-     files = files.map((e,i)=>{
-      if(e?.size/1000000<3){
-        return {type : e.type, blob: URL.createObjectURL(e), name: e.name, size: e.size, index: i}
-      }
-      else{
-        alert("file size should be less than 2mb");
-        return;
-      }
-    })
+     files = await Promise.all(
+      files.map(async(e,i)=>{
+        if(e?.size/1000000<10){
+          const unit8arrayfile = await ReadFileAsBytes(e);
+          return {type : e.type, name: e.name, size: e.size,file:unit8arrayfile,index: i,blob: URL.createObjectURL(e)}
+        }
+          
+        else{
+          alert("file size should be less than 10mb");
+          return;
+        }
+      })
+     )
       //@ts-ignore
     setFIles(files.filter((e)=> e!==undefined))
  }} type="file" multiple hidden id="file-upload" name="media"  accept="image/*,video/*"/>

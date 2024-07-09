@@ -3,7 +3,10 @@ import { SignIn } from '../_components/Signin'
 
 const page = () => {
   return (
-    <div><SignIn/></div>
+    <div>
+      <SignIn/>
+
+      </div>
   )
 }
 

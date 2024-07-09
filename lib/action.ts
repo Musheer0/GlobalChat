@@ -2,6 +2,7 @@
 import { signIn } from "@/auth"
 import { db } from "@/db"
 import { User } from "@prisma/client"
+import { uploadfile } from "./media"
 const Pusher = require("pusher")
 const pusher = new Pusher({
   appId : process.env.PUSHER_APP_ID,
@@ -13,17 +14,39 @@ const pusher = new Pusher({
 export const loginwithgithub = async()=>{
     await signIn("github")
 }
-export const sendMessage = async(userId:string, msg:string)=>{
+export const loginwithgoogle= async()=>{
+    await signIn("google")
+}
+export const sendMessage = async(userId:string, msg:string, media:any[])=>{
  if(userId && msg){
-
    try{
+  let mediaarray;
+  console.log(media)
+  if(media?.length>0){
+    mediaarray =await Promise.all(
+      media.map(async(e,i)=>{
+        //@ts-ignore
+        const filebuffer =  await uploadfile(e?.name, e?.size, e?.file,e?.type)
+        return filebuffer
+      })
+    )
+  }
    const newmessage =await  db.message.create({data:{
     msg: msg,
-    userId :userId
- }, include:{user: true}})
-
+    userId :userId,
+    media: mediaarray
+ }, include:{user: true},})
+ const filteredmessage = {
+  msg: newmessage?.msg,
+  id: newmessage.id,
+  created:newmessage.created,
+  updated:newmessage.updated,
+  user:newmessage.user,
+  userId:newmessage.userId,
+  media :newmessage.media.length
+ }
 pusher.trigger('message', 'send-msg-event',{
-  message: `${ JSON.stringify(newmessage)}\n\n`
+  message: `${ JSON.stringify(filteredmessage)}\n\n`
 })
  return newmessage;
    }

@@ -60,7 +60,7 @@ model User {
   accounts      Account[]   // Assuming Account is another model
   sessions      Session[]   // Assuming Session is another model
   msgs          Message[]   // Assuming Message is another model
-  
+  policy       Boolean  @default(true)
   @@map("users")
 }
 model Message {
@@ -70,8 +70,7 @@ model Message {
   updated DateTime  @default(now())
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
- type       String     @default("txt") //text messages : text, media : med, audio: aud, mixed messages : mix
- media  String[]
+ media Json[]  
 // todo add  audio 
   @@map("messages")
 }
@@ -82,12 +81,12 @@ model BugReport {
   media   Json[]
   Description String? 
 }
-model Media {
-  id String @id @default(cuid())
-  name String
-  data  Bytes
-  createdAt DateTime @default(now())
-  size  Int
-  type String
-  baseUri  String
-}
+// model Media {
+//   id String @id @default(cuid())
+//   name String
+//   data  Bytes
+//   createdAt DateTime @default(now())
+//   size  Int
+//   type String
+//   baseUri  String
+// }

@@ -27,6 +27,7 @@ import { useUserStore } from '@/states/user'
 import { toast } from 'sonner'
 import Pusher from 'pusher-js'
 import { useChatStore } from '@/states/message'
+import { CiFileOn } from "react-icons/ci";
 
 const Chat = ({ e, i }:any) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -78,13 +79,17 @@ useEffect(()=>{
          alt="sender profile" 
        />
        <div className="text flex flex-col gap-1">
-         <p className='username text-xs text-zinc-200'>{msg?.user?.name}</p>
+         <p className='username text-xs text-zinc-200 flex flex-wrap items-center gap-1'>{msg?.user?.name}
+         <p className='text-green-500 bg-green-950 w-fit px-2 rounded-md'>{(msg?.user?.id===user?.user?.id)? 'you': ''}</p>
+         </p>
  
          <p className='time'>
          {new Date(msg?.  updated).getTime() === new Date(msg.created).getTime()
           ? new Date(msg.created).toDateString() : `(edited) ${new Date(msg.updated).toDateString()}`}
           </p>
          <p className='msg whitespace-pre-wrap'>{msg?.msg}</p>
+
+          {msg?.media>0 &&   <p className='text-sky-500 bg-sky-950 px-3 py-4 rounded-lg flex items-center gap-1'><span className='text-2xl'><CiFileOn /></span> {msg?.media} attachments</p>}
        </div>
     </div>
     {/*@ts-ignore*/}

@@ -1,8 +1,7 @@
 "use client"
 import React, { useState } from 'react'
-import { UUID } from 'crypto'
 import { uploadfile } from '@/lib/media'
-import { Media } from '@prisma/client'
+
 
 const page = () => {
   const [file, setFile] = useState()

@@ -1,8 +1,5 @@
-"use client"
-
-import { Media } from "@prisma/client";
-
-const ReadFileAsBytes  = async(file:File)=>{
+// import { Media } from "@prisma/client";
+export const ReadFileAsBytes  = async(file:File)=>{
     //create a promise
     return new Promise((resolve,reject)=>{
       //create filereader api from js
@@ -26,18 +23,18 @@ const ReadFileAsBytes  = async(file:File)=>{
     });
   };
 
-export const uploadfile = async(file)=>{
-      // read file as byes
-  //@ts-ignore        
- const byes = await ReadFileAsBytes(file);
- // upload the file to postgress sql servel (neondb) with more info for future use
- // note: make sure to buffer the array in server side 
- //@ts-ignore         setFile(e.target.files[0])
- await uploadfile(file?.name, file?.size, byes, file?.type).then((res:Media)=>{
-  console.log(res);
-  //convert buffer to base64
-  const base64File = Buffer.from(res?.data).toString('base64');
-//   const fileurl = res?.baseUri+ base64File;
-   return {base64: base64File, type: res?.type, baseuri: res?.baseUri} //optional add response
- })
-}
+//  const uploadfile = async(file)=>{
+//       // read file as byes
+//   //@ts-ignore        
+//  const byes = await ReadFileAsBytes(file);
+//  // upload the file to postgress sql servel (neondb) with more info for future use
+//  // note: make sure to buffer the array in server side 
+//  //@ts-ignore         setFile(e.target.files[0])
+//  await uploadfile(file?.name, file?.size, byes, file?.type).then((res:Media)=>{
+//   console.log(res);
+//   //convert buffer to base64
+//   const base64File = Buffer.from(res?.data).toString('base64');
+// //   const fileurl = res?.baseUri+ base64File;
+//    return {base64: base64File, type: res?.type, baseuri: res?.baseUri} //optional add response
+//  })
+// }
